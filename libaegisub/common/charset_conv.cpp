@@ -277,8 +277,11 @@ Iconv::Iconv() : cd(iconv_invalid) { }
 Iconv::Iconv(const char *source, const char *dest)
 : cd(iconv_open(dest, source))
 {
-	if (cd == iconv_invalid)
-		throw UnsupportedConversion(std::string("Cannot convert from ") + source + " to " + dest);
+	if (cd == iconv_invalid) {
+		throw UnsupportedConversion(std::string("Cannot convert from ") + source + " to " + dest + ",\n"
+		"Doing conversion ignoring unsupported characters...");
+		cd(iconv_open(dest+"//IGNORE", source));
+	}
 }
 
 Iconv::~Iconv() {
@@ -424,5 +427,5 @@ bool IsConversionSupported(const char *src, const char *dst) {
 	return supported;
 }
 
-	}
-}
+} //namespace charset {
+} //namespace agi {
